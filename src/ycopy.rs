@@ -5,10 +5,11 @@ use std::path::Path;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::fs;
+//use std::fs::{self, DirEntry};
 
 fn main()
 {
-    println!("Hello, world!");
+  //  println!("Hello, world!");
 
     let args : Vec<String> = args().collect();
     if args.len() != 3
@@ -19,10 +20,8 @@ fn main()
 
     //Result
     
-
-    
-    let path = current_dir().expect("cur dir is illegal, curiouslly!");
-    println!( "{:?} ", path);
+    //let path = current_dir().expect("cur dir is illegal, curiouslly!");
+    //println!( "{:?} ", path);
 
     let param1 = &args[1];
     println!("{}", param1);
@@ -43,15 +42,23 @@ fn main()
     println!("{}", _out_dir);
 
     if let entry = fs::read_dir(in_dir).expect("read_dir error") {        
-        let dir = entry;        
-        println!("{:?}", Some(dir));
+        let dir = &entry;        
+        
+        println!("{:?}", &dir);        
+        println!("{:?}", dir.nth(0));
+        //ReadDir
 
-      /*  if dir.is_dir() {
+        /*match dir {
+            Ok(path) =>  println!("{:?}" , path),
+            _ => {}
+        }*/
+
+        /*if dir.is_dir() {
         for entry in fs::read_dir(dir)? {
             let entry = entry?;
             let path = entry.path();
             if path.is_dir() {
-                ;//visit_dirs(&path, cb)?;
+                //visit_dirs(&path, cb)?;
             } else {
                 //cb(&entry);
                  println!("{:?}", Some(dir));
