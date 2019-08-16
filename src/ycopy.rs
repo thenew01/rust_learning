@@ -4,7 +4,10 @@ use std::path::Path;
 
 use std::io::prelude::*;
 use std::io::BufReader;
-use std::fs;
+//use std::fs;
+use std::io;
+use std::fs::{self, DirEntry};
+
 
 fn main()
 {
@@ -16,10 +19,6 @@ fn main()
         println!("para error");
         //return;
     }
-
-    //Result
-    
-
     
     let path = current_dir().expect("cur dir is illegal, curiouslly!");
     println!( "{:?} ", path);
@@ -35,29 +34,46 @@ fn main()
     let idx0 = idx.expect("need a path");
     let in_dir = param1.split_at(idx0).0;
 
-    println!("{}", in_dir);
+    println!("in {}", in_dir);
 
-    let fmt = &param1[idx0..];
+    let _fmt = &param1[idx0+2..];
     let _out_dir = &args[2];
     
-    println!("{}", _out_dir);
+    println!("out {}", _out_dir);
 
-    if let entry = fs::read_dir(in_dir).expect("read_dir error") {        
-        let dir = entry;        
-        println!("{:?}", Some(dir));
+    let outDir : &Path = Path::new(_out_dir);
+    let inDir : &Path = Path::new(in_dir);
+    visit_dirs(inDir, _fmt, outDir, &cp00);
+}
 
-      /*  if dir.is_dir() {
+fn cp00(dir : &DirEntry, sufifx: &str, dest_dir: &Path) -> () {
+    //println!("{}", sufifx);
+
+    let path : PathBuf = dir.path();
+    let spath = path.into_os_string();    
+    let string = spath.to_str();
+    match string {    
+        Some(string) => {
+            if string.ends_with(sufifx) {
+                println!("{:?} --> {} ", string, dest_dir.display());
+                fs::copy(string, dest_dir);                    
+            }
+        },
+        _=> {}
+    }
+}
+
+fn visit_dirs(dir: &Path, suffix: &str, dest_dir : &Path, cb: &dyn Fn(&DirEntry, &str, &Path)) -> io::Result<()> {
+    if dir.is_dir() {
         for entry in fs::read_dir(dir)? {
             let entry = entry?;
             let path = entry.path();
             if path.is_dir() {
-                ;//visit_dirs(&path, cb)?;
+                visit_dirs(&path, suffix, dest_dir, cb )?;
             } else {
-                //cb(&entry);
-                 println!("{:?}", Some(dir));
+                cb(&entry, &suffix, dest_dir);
             }
         }
-        */
-        //fs::copy(dir, _out_dir);
     }
+    Ok(())
 }
