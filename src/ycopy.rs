@@ -11,11 +11,9 @@ use std::fs::{self, DirEntry};
 
 fn main()
 {
-    //println!("Hello, world!");
-
     let args : Vec<String> = args().collect();
     if args.len() != 3 && args.len() != 4 {
-        println!("args error.Usage: ycopy src_files dest_dir");
+        println!("args error. \n Usage: ycopy src_files dest_dir");
         return;
     }
     
@@ -30,9 +28,9 @@ fn main()
         idx = param1.rfind('/');
     }    
     let idx0 = idx.expect("need a path");
-    let in_dir = param1.split_at(idx0).0;
+    let _in_dir = param1.split_at(idx0).0;
 
-    println!("src dir: \"{}\"", in_dir);
+    println!("src dir: \"{}\"", _in_dir);
 
     let _fmt = &param1[idx0+2..];
     let _out_dir = &args[2];
@@ -40,11 +38,11 @@ fn main()
     println!("dest dir: \"{}\"", _out_dir);
 
     let out_dir2 : &Path = Path::new(_out_dir);
-    let in_dir2 : &Path = Path::new(in_dir);
-    visit_dirs(in_dir2, _fmt, out_dir2, &cp00).expect("visit_dirs error");
+    let in_dir2 : &Path = Path::new(_in_dir);
+    visit_dirs(in_dir2, _fmt, out_dir2, &copy_file).expect("visit_dirs error");
 }
 
-fn cp00(dir : &DirEntry, sufifx: &str, dest_dir: &Path) -> () {
+fn copy_file(dir : &DirEntry, sufifx: &str, dest_dir: &Path) -> () {
     //println!("{}", sufifx);
 
     let path : PathBuf = dir.path();
